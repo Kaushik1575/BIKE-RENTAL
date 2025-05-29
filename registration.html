@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bike Rental - Registration</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* General Body and Container Styling */
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .registration-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Form Title */
+        .form-title {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* User Type Toggle */
+        .user-type-toggle {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .user-type-toggle button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 5px;
+            background: #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .user-type-toggle button.active {
+            background: #3498db;
+            color: white;
+        }
+
+        /* Form Groups and Inputs */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0; /* Slightly thinner border */
+            border-radius: 8px;
+            font-size: 1rem; /* Use rem for better accessibility */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            outline: none;
+        }
+
+        /* Admin Specific Fields */
+        .admin-fields {
+            display: none; /* Hidden by default */
+        }
+
+        /* Submit Button (using .submit-btn class as before) */
+        /* Styles for .submit-btn are already in styles.css */
+        /* Ensure this button uses the .submit-btn class in the HTML */
+
+        /* Messages (Error and Success) */
+        .message-box {
+            display: none;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            animation: slideIn 0.3s ease-out;
+            font-weight: 500;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+            color: white;
+        }
+
+        .message-box h3 {
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .message-box p {
+            font-size: 1rem;
+        }
+
+        /* Back Link */
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+            color: #2980b9; /* Darker blue on hover */
+        }
+
+        /* Responsive Form Layout */
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            margin-bottom: 0; /* Remove bottom margin from nested form-groups */
+        }
+
+        /* Media Query for smaller screens */
+        @media (max-width: 480px) {
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+
+            .form-row .form-group {
+                margin-bottom: 20px; /* Add bottom margin back for column layout */
+            }
+
+            .registration-container {
+                padding: 20px;
+            }
+
+            .form-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="registration-container">
+        <h2 class="form-title" id="registrationTitle">User Registration</h2>
+
+        <div class="user-type-toggle">
+            <button id="userRegToggle" class="active">User Registration</button>
+            <button id="adminRegToggle">Admin Registration</button>
+        </div>
+
+        <form id="registrationForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" id="lastName" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" required>
+            </div>
+
+            <div class="admin-fields">
+                <div class="form-group">
+                    <label for="adminId">Admin ID:</label>
+                    <input type="text" id="adminId">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" pattern="[0-9]{10}" required>
+            </div>
+
+            <!-- Aadhar field for User Registration -->
+            <div class="form-group" id="aadharGroup">
+                <label for="aadhar">Aadhar Number:</label>
+                <input type="text" id="aadhar" pattern="[0-9]{12}">
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" required minlength="8">
+            </div>
+
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password:</label>
+                <input type="password" id="confirmPassword" required minlength="8">
+            </div>
+
+            <div class="admin-fields">
+                 <div class="form-group">
+                    <label for="securityCode">Security Code:</label>
+                    <input type="text" id="securityCode">
+                </div>
+            </div>
+
+            <button type="button" class="submit-btn" onclick="handleRegistration()">Register</button>
+        </form>
+
+        <div id="errorMessage" class="message-box error-message">
+            <h3>Registration Failed</h3>
+            <p id="errorText"></p>
+        </div>
+
+        <div id="successMessage" class="message-box success-message">
+            <h3>Registration Successful!</h3>
+            <p>Please wait while we redirect you to the login page...</p>
+        </div>
+
+        <a href="login.html" class="back-link">Already have an account? Login here</a>
+    </div>
+
+    <script>
+        const userRegToggle = document.getElementById('userRegToggle');
+        const adminRegToggle = document.getElementById('adminRegToggle');
+        const registrationTitle = document.getElementById('registrationTitle');
+        const adminFields = document.querySelectorAll('.admin-fields');
+        const registrationForm = document.getElementById('registrationForm');
+        
+        let currentRegType = 'user'; // Default registration type
+
+        // Function to toggle registration type
+        function toggleRegistrationType(type) {
+            currentRegType = type;
+            if (type === 'user') {
+                userRegToggle.classList.add('active');
+                adminRegToggle.classList.remove('active');
+                registrationTitle.textContent = 'User Registration';
+                adminFields.forEach(field => field.style.display = 'none');
+                 // Set required attribute for user fields and remove for admin fields
+                 registrationForm.querySelectorAll('input[required]').forEach(input => input.required = true);
+                 document.getElementById('adminId').required = false;
+                 document.getElementById('securityCode').required = false;
+                 // Set required for Aadhar
+                 document.getElementById('aadhar').required = true;
+
+            } else {
+                userRegToggle.classList.remove('active');
+                adminRegToggle.classList.add('active');
+                registrationTitle.textContent = 'Admin Registration';
+                adminFields.forEach(field => field.style.display = 'block');
+                // Set required attribute for admin fields and remove for user-specific fields that are not needed for admin
+                 document.getElementById('adminId').required = true;
+                 document.getElementById('securityCode').required = true;
+                 // Remove required for Aadhar in admin form
+                 document.getElementById('aadhar').required = false;
+            }
+             // Clear messages when toggling
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+             // Reset form fields (optional, might clear entered data)
+             // registrationForm.reset();
+        }
+
+        // Event listeners for toggle buttons
+        userRegToggle.addEventListener('click', () => toggleRegistrationType('user'));
+        adminRegToggle.addEventListener('click', () => toggleRegistrationType('admin'));
+
+        async function handleRegistration() {
+            // Clear previous messages
+            document.getElementById('errorMessage').style.display = 'none';
+            document.getElementById('successMessage').style.display = 'none';
+
+            try {
+                // Collect common fields
+                const firstName = document.getElementById('firstName').value;
+                const lastName = document.getElementById('lastName').value;
+                const email = document.getElementById('email').value;
+                const phone = document.getElementById('phone').value;
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                let userData = { 
+                    firstName,
+                    lastName,
+                    email,
+                    phone,
+                    password,
+                    // Add default values for new fields in Excel
+                    userType: currentRegType, 
+                    status: 'active', 
+                    gender: 'N/A', 
+                    aadhar: '', 
+                    role: currentRegType === 'admin' ? 'admin' : 'user' 
+                };
+
+                 // Validate common fields
+                 if (!firstName || !lastName || !email || !phone || !password || !confirmPassword || (currentRegType === 'user' && !aadhar)) {
+                    showError('Please fill in all required fields');
+                    return;
+                }
+
+                // Validate password match
+                if (password !== confirmPassword) {
+                    showError('Passwords do not match');
+                    return;
+                }
+
+                // Validate phone number
+                if (!/^[0-9]{10}$/.test(phone)) {
+                    showError('Please enter a valid 10-digit phone number');
+                    return;
+                }
+
+                // Validate Aadhar for user registration
+                if (currentRegType === 'user') {
+                    const aadhar = document.getElementById('aadhar').value;
+                    if (!/^[0-9]{12}$/.test(aadhar)) {
+                         showError('Please enter a valid 12-digit Aadhar number');
+                         return;
+                    }
+                    userData.aadhar = aadhar; // Add Aadhar to userData if user registration
+                } else {
+                     userData.aadhar = ''; // Ensure aadhar is empty for admin registration
+                }
+
+                // Handle admin specific fields and validation
+                if (currentRegType === 'admin') {
+                    const adminId = document.getElementById('adminId').value;
+                    const securityCode = document.getElementById('securityCode').value;
+
+                    // Add admin specific fields to userData object
+                    userData.adminId = adminId;
+                    userData.securityCode = securityCode; // Security code sent to server for validation
+
+                     // Admin specific validation
+                    if (!adminId || !securityCode) {
+                         showError('Please fill in all required fields for admin registration');
+                         return;
+                    }
+                    // Server-side will validate adminId format and security code
+                }
+
+                // Use the correct endpoint for saving user data (as implemented in server.js)
+                const response = await fetch('http://localhost:3000/save-to-excel', { 
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ data: userData, type: currentRegType })
+                });
+
+                const result = await response.json();
+                
+                if (!result.success) {
+                    showError(result.error || 'Registration failed');
+                    return;
+                }
+
+                // Show success message
+                showSuccess();
+            } catch (error) {
+                console.error('Registration error:', error);
+                showError('Registration failed. Please try again.');
+            }
+        }
+
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorMessage.style.display = 'block';
+            
+            // Hide error message after 5 seconds
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess() {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+            
+            // Redirect to login page after 3 seconds
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 3000);
+        }
+
+        // Initialize: set default registration type to user on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            toggleRegistrationType('user');
+        });
+
+    </script>
+</body>
+</html> 

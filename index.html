@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bike Rental System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Basic styles from your provided code for the card section */
+        .card-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 20px;
+            padding: 10px;
+            scroll-snap-type: x mandatory;
+            /* Hide scrollbar for aesthetic */
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        .card-container::-webkit-scrollbar {
+            display: none; /* Chrome, Safari and Opera */
+        }
+
+        .card {
+            flex: 0 0 auto;
+            width: 300px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            scroll-snap-align: start;
+            padding: 15px;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .card.unavailable {
+            opacity: 0.7;
+            filter: grayscale(0.5);
+        }
+
+        .card-image {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            margin-bottom: 15px;
+        }
+
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .card-content {
+            padding: 10px 0;
+        }
+
+        .card h3 {
+            margin: 10px 0;
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        .category {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .price {
+            color: #2ecc71;
+            font-size: 1.3em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .vehicle-specs {
+            color: #666;
+            font-size: 0.9em;
+            margin: 10px 0;
+        }
+
+        .km-input {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .km-input input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+
+        .card button {
+            padding: 8px 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .card button:hover {
+            background: #0056b3;
+        }
+
+        .card button.disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .cost-result {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #2ecc71;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 1.2em;
+        }
+
+        .error-container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .error-message {
+            color: #e74c3c;
+            margin-bottom: 15px;
+        }
+
+        .retry-button {
+            padding: 8px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .retry-button:hover {
+            background: #2980b9;
+        }
+
+        .no-vehicles {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <h1>BikeRental</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#bikes">Vehicles</a></li>
+                <li><a href="#pricing">Pricing</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li id="userStatus">
+                    <!-- User status will be shown here -->
+                </li>
+                <li id="loginButtons">
+                    <button class="login-btn" onclick="window.location.href='login.html'">Login</button>
+                    <button class="register-btn" onclick="window.location.href='registration.html'">Register</button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <h2 id="welcomeHeading">Welcome to BikeRental</h2>
+            <p id="welcomeMessageIndex">Find your perfect ride for any adventure</p>
+            <a href="#bikes" class="cta-button">View Bikes</a>
+        </section>
+
+        <section id="bikes" class="bike-gallery">
+            <h2>Available Vehicles</h2>
+            <div class="search-container">
+                <input type="text" id="vehicleSearch" placeholder="Search vehicles by name..." class="search-input">
+            </div>
+            <div class="card-container" id="vehicleGrid">
+                <!-- Vehicle cards will be dynamically loaded here -->
+            </div>
+        </section>
+
+        <section id="pricing" class="pricing">
+            <h2>Rental Pricing</h2>
+            <div class="pricing-cards">
+                <div class="price-card">
+                    <h3>Hourly</h3>
+                    <p class="price">₹50/hour</p>
+                    <ul>
+                        <li>Perfect for short trips</li>
+                        <li>Flexible duration</li>
+                        <li>No commitment</li>
+                    </ul>
+                    <button class="rent-button">Rent Now</button>
+                </div>
+                <div class="price-card">
+                    <h3>Daily</h3>
+                    <p class="price">₹250/day</p>
+                    <ul>
+                        <li>Best value</li>
+                        <li>Full day access</li>
+                        <li>Free helmet</li>
+                    </ul>
+                    <button class="rent-button">Rent Now</button>
+                </div>
+                <div class="price-card">
+                    <h3>Weekly</h3>
+                    <p class="price">₹1000/week</p>
+                    <ul>
+                        <li>Long-term rental</li>
+                        <li>Priority booking</li>
+                        <li>Free maintenance</li>
+                    </ul>
+                    <button class="rent-button">Rent Now</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact">
+            <h2>Contact Us</h2>
+            <form id="contactForm">
+                <input type="text" placeholder="Name" required>
+                <input type="email" placeholder="Email" required>
+                <textarea placeholder="Message" required></textarea>
+                <button type="submit">Send Message</button>
+            </form>
+        </section>
+    </main>
+
+    <!-- Booking Modal -->
+    <div id="bookingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeBookingModal()">&times;</span>
+            <div class="form-container" id="bookingForm">
+                <h2>Book a Vehicle</h2>
+                <form id="bookForm">
+                    <div class="form-group">
+                        <label>Selected Vehicle:</label>
+                        <p id="selectedVehicleDisplay"></p>
+                    </div>
+                    <div class="form-group">
+                        <label for="userName">Full Name:</label>
+                        <input type="text" id="userName" name="userName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mobileNumber">Mobile Number:</label>
+                        <input type="tel" id="mobileNumber" name="mobileNumber" pattern="[0-9]{10}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="aadharNumber">Aadhar Number:</label>
+                        <input type="text" id="aadharNumber" name="aadharNumber" pattern="[0-9]{12}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="pickupTime">Pickup Time:</label>
+                        <input type="datetime-local" id="pickupTime" name="pickupTime" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Delivery Method:</label>
+                        <div class="delivery-options">
+                            <label>
+                                <input type="radio" name="deliveryMethod" value="shop" required>
+                                Shop Pickup
+                            </label>
+                            <label>
+                                <input type="radio" name="deliveryMethod" value="home" required>
+                                Home Delivery (+₹100)
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="advancePayment">Advance Payment (₹100):</label>
+                        <div class="payment-options">
+                            <div class="qr-code">
+                                <img src="images/qr-code.png" alt="Payment QR Code">
+                                <p>Scan to pay ₹100 advance</p>
+                            </div>
+                            <div class="payment-status">
+                                <input type="text" id="transactionId" placeholder="Enter Transaction ID" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="captcha">Enter Captcha:</label>
+                        <div class="captcha-container">
+                            <div id="captchaText" class="captcha-text"></div>
+                            <input type="text" id="captcha" name="captcha" required>
+                            <button type="button" onclick="generateCaptcha()">Refresh</button>
+                        </div>
+                    </div>
+                    <button type="submit" class="submit-btn">Confirm Booking</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Message -->
+    <div id="successMessage" class="success-message" style="display: none;">
+        <h3>Success!</h3>
+        <p id="successText"></p>
+        <button onclick="showBookingForm()">Proceed to Booking</button>
+    </div>
+
+    <!-- Error Message -->
+    <div id="errorMessage" class="error-message" style="display: none;">
+        <h3>Error</h3>
+        <p id="errorText"></p>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>BikeRental</h3>
+                <p>Your trusted bike rental service</p>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <p>Email: info@bikerental.com</p>
+                <p>Phone: (555) 123-4567</p>
+            </div>
+            <div class="footer-section">
+                <h3>Follow Us</h3>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 BikeRental. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Function to fetch vehicles from server
+        async function fetchVehicles() {
+            const cardContainer = document.querySelector('.card-container');
+            cardContainer.innerHTML = '<div class="loading">Loading vehicles...</div>';
+            
+            try {
+                const response = await fetch('http://localhost:4000/api/vehicles');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                
+                if (!data.success || !data.vehicles || data.vehicles.length === 0) {
+                    cardContainer.innerHTML = '<div class="no-vehicles">No vehicles available at the moment.</div>';
+                    return;
+                }
+                
+                displayVehicles(data.vehicles);
+            } catch (error) {
+                console.error('Error fetching vehicles:', error);
+                cardContainer.innerHTML = `
+                    <div class="error-container">
+                        <div class="error-message">Failed to load vehicles. Please try again.</div>
+                        <button class="retry-button" onclick="fetchVehicles()">Retry</button>
+                    </div>
+                `;
+            }
+        }
+
+        // Function to display vehicles
+        function displayVehicles(vehicles) {
+            const cardContainer = document.querySelector('.card-container');
+            cardContainer.innerHTML = '';
+            
+            vehicles.forEach(vehicle => {
+                const card = document.createElement('div');
+                card.className = `card ${vehicle.status !== 'available' ? 'unavailable' : ''}`;
+                
+                // Parse vehicle specs from description
+                const specs = vehicle.description ? vehicle.description.split(', ') : ['N/A', 'N/A', 'N/A'];
+                
+                card.innerHTML = `
+                    <div class="card-image">
+                        <img src="${vehicle.image || 'images/default-vehicle.jpg'}" alt="${vehicle.name}" 
+                             onerror="this.src='images/default-vehicle.jpg'">
+                        ${vehicle.status !== 'available' ? 
+                            `<div class="status-badge">${vehicle.status}</div>` : ''}
+                    </div>
+                    <div class="card-content">
+                        <h3>${vehicle.name}</h3>
+                        <div class="category">${vehicle.type}</div>
+                        <div class="price">₹${vehicle.price}/day</div>
+                        <div class="vehicle-specs">
+                            <div>${specs[0] || 'N/A'}</div>
+                            <div>${specs[1] || 'N/A'}</div>
+                            <div>${specs[2] || 'N/A'}</div>
+                        </div>
+                        <div class="km-input">
+                            <input type="number" min="1" placeholder="Number of days" 
+                                   onchange="calculateCost(this, ${vehicle.price})">
+                        </div>
+                        <div class="cost-result"></div>
+                        <button onclick="bookVehicle('${vehicle.id}')" 
+                                ${vehicle.status !== 'available' ? 'disabled' : ''}>
+                            ${vehicle.status === 'available' ? 'Book Now' : 'Not Available'}
+                        </button>
+                    </div>
+                `;
+                
+                cardContainer.appendChild(card);
+            });
+        }
+
+        function calculateCost(input, pricePerDay) {
+            const days = parseInt(input.value) || 0;
+            const totalCost = days * pricePerDay;
+            const costResult = input.parentElement.nextElementSibling;
+            costResult.textContent = days > 0 ? `Total Cost: ₹${totalCost}` : '';
+        }
+
+        function bookVehicle(vehicleId) {
+            const userType = localStorage.getItem('userType');
+            if (!userType) {
+                alert('Please login to book a vehicle');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Add your booking logic here
+            alert('Booking functionality will be implemented soon!');
+        }
+
+        // Load vehicles when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            updateNavigation();
+            fetchVehicles();
+        });
+
+        // Refresh vehicles every 30 seconds
+        setInterval(fetchVehicles, 30000);
+
+        // Search functionality
+        document.getElementById('vehicleSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.card');
+            
+            cards.forEach(card => {
+                const vehicleName = card.querySelector('h3').textContent.toLowerCase();
+                const vehicleType = card.querySelector('.category').textContent.toLowerCase();
+                
+                if (vehicleName.includes(searchTerm) || vehicleType.includes(searchTerm)) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        // Keep other necessary functions from your script.js
+        // Check login status and update navigation
+        function updateNavigation() {
+            const userType = localStorage.getItem('userType');
+            const userStatus = document.getElementById('userStatus');
+            const loginButtons = document.getElementById('loginButtons');
+
+            if (userType) {
+                userStatus.innerHTML = `
+                    <span class="user-info">
+                        <i class="fas fa-user"></i>
+                        ${userType === 'admin' ? 'Admin' : 'User'}
+                    </span>
+                `;
+                loginButtons.innerHTML = `
+                    <button class="logout-btn" onclick="logout()">Logout</button>
+                `;
+
+                if (userType === 'admin') {
+                    userStatus.innerHTML += `
+                        <a href="admin-dashboard.html" class="admin-link">
+                            <i class="fas fa-cog"></i> Dashboard
+                        </a>
+                    `;
+                }
+            } else {
+                userStatus.innerHTML = '';
+                loginButtons.innerHTML = `
+                    <button class="login-btn" onclick="window.location.href='login.html'">Login</button>
+                    <button class="register-btn" onclick="window.location.href='registration.html'">Register</button>
+                `;
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('userType');
+            updateNavigation();
+            window.location.reload();
+        }
+    </script>
+</body>
+</html> 

@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bike Rental - Admin Login</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 500px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .form-title {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+            outline: none;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            background: linear-gradient(135deg, #b21f1f 0%, #1a2a6c 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(26, 42, 108, 0.3);
+        }
+
+        .error-message {
+            display: none;
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .welcome-message {
+            display: none;
+            background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 20px;
+            animation: slideIn 0.5s ease-out;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .welcome-message h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: #fff;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .welcome-message p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            color: #ecf0f1;
+        }
+
+        .welcome-message .user-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #fff;
+            margin: 10px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .welcome-message .user-role {
+            font-size: 18px;
+            color: #ecf0f1;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .welcome-message .action-buttons {
+            margin-top: 20px;
+        }
+
+        .welcome-message .action-button {
+            display: inline-block;
+            padding: 12px 25px;
+            margin: 0 10px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .welcome-message .action-button:hover {
+            background: white;
+            color: #1a2a6c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #1a2a6c;
+            text-decoration: none;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2 class="form-title">Admin Login</h2>
+
+        <!-- Admin Login Form -->
+        <form id="adminLoginForm">
+            <div class="form-group">
+                <label for="adminId">Admin ID:</label>
+                <input type="text" id="adminId" required>
+            </div>
+            <div class="form-group">
+                <label for="adminPassword">Password:</label>
+                <input type="password" id="adminPassword" required>
+            </div>
+            <div class="form-group">
+                <label for="securityCode">Security Code:</label>
+                <input type="text" id="securityCode" required>
+            </div>
+            <button type="button" class="submit-btn" onclick="handleAdminLogin()">Login</button>
+        </form>
+
+        <div id="errorMessage" class="error-message">
+            <h3>Login Failed</h3>
+            <p id="errorText"></p>
+        </div>
+
+        <div id="welcomeMessage" class="welcome-message">
+            <h2>Welcome to Admin Dashboard</h2>
+            <div class="user-name" id="userName"></div>
+            <div class="user-role" id="userRole"></div>
+            <p id="welcomeText"></p>
+            <div class="action-buttons" id="actionButtons">
+                <!-- Buttons will be dynamically added -->
+            </div>
+        </div>
+
+        <a href="index.html" class="back-link">Back to Home</a>
+    </div>
+
+    <script>
+        async function handleAdminLogin() {
+            try {
+                const adminId = document.getElementById('adminId').value;
+                const password = document.getElementById('adminPassword').value;
+                const securityCode = document.getElementById('securityCode').value;
+
+                if (!adminId || !password || !securityCode) {
+                    showError('Please fill in all fields');
+                    return;
+                }
+
+                const response = await fetch('http://localhost:3000/api/admin-login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ adminId, password, securityCode })
+                });
+
+                const result = await response.json();
+                
+                if (!result.success) {
+                    showError(result.error || 'Login failed');
+                    return;
+                }
+
+                // Show welcome message for admin
+                showWelcomeMessage(result.admin);
+            } catch (error) {
+                console.error('Login error:', error);
+                showError('Login failed. Please try again.');
+            }
+        }
+
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            errorText.textContent = message;
+            errorMessage.style.display = 'block';
+            
+            // Hide error message after 3 seconds
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 3000);
+        }
+
+        function showWelcomeMessage(adminData) {
+            // Hide form and error message
+            document.getElementById('adminLoginForm').style.display = 'none';
+            document.getElementById('errorMessage').style.display = 'none';
+            
+            // Store admin data in local storage
+            localStorage.setItem('loggedInUser', JSON.stringify(adminData));
+            localStorage.setItem('userType', 'admin');
+
+            // Show welcome message
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            const userName = document.getElementById('userName');
+            const userRole = document.getElementById('userRole');
+            const welcomeText = document.getElementById('welcomeText');
+            const actionButtons = document.getElementById('actionButtons');
+            
+            // Set admin details
+            userName.textContent = `Admin ${adminData.name}`;
+            userRole.textContent = 'ADMINISTRATOR';
+            welcomeText.textContent = 'Welcome to the admin dashboard. You can now manage vehicles and bookings.';
+            
+            actionButtons.innerHTML = `
+                <a href="admin-dashboard.html" class="action-button">Go to Dashboard</a>
+                <a href="manage-vehicles.html" class="action-button">Manage Vehicles</a>
+            `;
+            
+            welcomeMessage.style.display = 'block';
+
+            // Redirect to admin dashboard after 3 seconds
+            setTimeout(() => {
+                window.location.href = 'admin-dashboard.html';
+            }, 3000);
+        }
+    </script>
+</body>
+</html> 

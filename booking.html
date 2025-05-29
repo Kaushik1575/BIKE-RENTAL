@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Ride - Bike Rental</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: #fff;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        header h1 {
+            color: #2c3e50;
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        .booking-container {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .vehicle-details {
+            background: #fff;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 20px;
+        }
+
+        .vehicle-card {
+            text-align: center;
+        }
+
+        .vehicle-card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .vehicle-card h3 {
+            color: #2c3e50;
+            margin: 0.5rem 0;
+            font-size: 1.5rem;
+        }
+
+        .vehicle-info {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .info-item {
+            text-align: left;
+        }
+
+        .info-item strong {
+            color: #2c3e50;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .booking-form {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.2);
+            outline: none;
+        }
+
+        .delivery-options {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .delivery-option {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .delivery-option:hover {
+            border-color: #3498db;
+        }
+
+        .delivery-option.selected {
+            border-color: #3498db;
+            background: rgba(52,152,219,0.1);
+        }
+
+        .payment-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-top: 2rem;
+        }
+
+        .qr-code {
+            text-align: center;
+            padding: 1rem;
+            background: #fff;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .qr-code img {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 1rem 2rem;
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .progress-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .step-number {
+            width: 30px;
+            height: 30px;
+            background: #e9ecef;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 0.5rem;
+            color: #6c757d;
+            font-weight: bold;
+        }
+
+        .step-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .progress-line {
+            position: absolute;
+            top: 15px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: #e9ecef;
+            z-index: 0;
+        }
+
+        .active .step-number {
+            background: #3498db;
+            color: #fff;
+        }
+
+        .active .step-label {
+            color: #3498db;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .booking-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .vehicle-details {
+                position: static;
+            }
+        }
+
+        .navigation-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section:first-child {
+            display: block;
+        }
+
+        .error {
+            border-color: #dc3545 !important;
+        }
+
+        .success-message, .error-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            animation: slideIn 0.3s ease-out;
+            z-index: 1000;
+        }
+
+        .success-message {
+            background: #28a745;
+        }
+
+        .error-message {
+            background: #dc3545;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-motorcycle"></i> Book Your Ride</h1>
+        </header>
+
+        <div class="progress-bar">
+            <div class="progress-line"></div>
+            <div class="progress-step active">
+                <div class="step-number">1</div>
+                <div class="step-label">Vehicle Details</div>
+            </div>
+            <div class="progress-step">
+                <div class="step-number">2</div>
+                <div class="step-label">Personal Info</div>
+            </div>
+            <div class="progress-step">
+                <div class="step-number">3</div>
+                <div class="step-label">Payment</div>
+            </div>
+        </div>
+
+        <div class="booking-container">
+            <div class="vehicle-details">
+                <div class="vehicle-card">
+                    <img id="vehicleImage" src="" alt="Selected Vehicle">
+                    <h3 id="vehicleName"></h3>
+                    <div class="vehicle-info">
+                        <div class="info-item">
+                            <strong>Category</strong>
+                            <span id="vehicleCategory"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Price</strong>
+                            <span id="vehiclePrice"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Mileage</strong>
+                            <span id="vehicleMileage"></span>
+                        </div>
+                        <div class="info-item">
+                            <strong>Seating</strong>
+                            <span id="vehicleSeating"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <form id="bookingForm" class="booking-form">
+                <div class="form-section" id="personalInfo">
+                    <h2>Personal Information</h2>
+                    <div class="form-group">
+                        <label for="userName">Full Name</label>
+                        <input type="text" id="userName" name="userName" required placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="mobileNumber">Mobile Number</label>
+                        <input type="tel" id="mobileNumber" name="mobileNumber" pattern="[0-9]{10}" required placeholder="Enter 10-digit mobile number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="aadharNumber">Aadhar Number</label>
+                        <input type="text" id="aadharNumber" name="aadharNumber" pattern="[0-9]{12}" required placeholder="Enter 12-digit Aadhar number">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="aadharUpload">Upload Aadhar (PDF or Image)</label>
+                        <input type="file" id="aadharUpload" name="aadharUpload" accept=".pdf,image/*" required>
+                    </div>
+                </div>
+
+                <div class="form-section" id="bookingDetails" style="display: none;">
+                    <h2>Booking Details</h2>
+                    <div class="form-group">
+                        <label for="pickupTime">Pickup Time</label>
+                        <input type="datetime-local" id="pickupTime" name="pickupTime" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Delivery Method</label>
+                        <div class="delivery-options">
+                            <div class="delivery-option selected" data-value="shop">
+                                <i class="fas fa-store"></i>
+                                <h4>Shop Pickup</h4>
+                                <p>Free</p>
+                            </div>
+                            <div class="delivery-option" data-value="home">
+                                <i class="fas fa-home"></i>
+                                <h4>Home Delivery</h4>
+                                <p>+₹100</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="addressGroup" style="display: none;">
+                        <label for="address">Delivery Address</label>
+                        <input type="text" id="address" name="address" placeholder="Enter your delivery address">
+                    </div>
+                </div>
+
+                <div class="form-section" id="paymentSection" style="display: none;">
+                    <h2>Advance Payment</h2>
+                    <div class="qr-code">
+                        <img src="images/qr-code.png" alt="Payment QR Code">
+                        <p>Scan to pay ₹100 advance</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="transactionId">Transaction ID</label>
+                        <input type="text" id="transactionId" name="transactionId" required placeholder="Enter your transaction ID">
+                    </div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button type="button" class="btn btn-secondary" id="prevBtn" style="display: none;">
+                        <i class="fas fa-arrow-left"></i> Previous
+                    </button>
+                    <button type="button" class="btn" id="nextBtn">
+                        Next <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Get vehicle details from URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const vehicleId = urlParams.get('vehicleId');
+            
+            // Load vehicle details from server
+            try {
+                const response = await fetch(`http://localhost:3000/api/vehicles/${vehicleId}`);
+                const data = await response.json();
+                
+                if (data.success) {
+                    const vehicle = data.vehicle;
+                    document.getElementById('vehicleImage').src = vehicle.image;
+                    document.getElementById('vehicleName').textContent = vehicle.name;
+                    document.getElementById('vehicleCategory').textContent = vehicle.type;
+                    document.getElementById('vehiclePrice').textContent = `₹${vehicle.price}/day`;
+                    document.getElementById('vehicleMileage').textContent = `${vehicle.mileage} km/l`;
+                    document.getElementById('vehicleSeating').textContent = `${vehicle.seatingCapacity} persons`;
+                } else {
+                    window.location.href = 'index.html';
+                }
+            } catch (error) {
+                console.error('Error fetching vehicle details:', error);
+                window.location.href = 'index.html';
+            }
+
+            // Form sections
+            const sections = [
+                document.getElementById('personalInfo'),
+                document.getElementById('bookingDetails'),
+                document.getElementById('paymentSection')
+            ];
+
+            // Progress steps
+            const steps = document.querySelectorAll('.progress-step');
+            let currentStep = 0;
+
+            // Navigation buttons
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            // Show only the first section initially
+            sections.forEach((section, index) => {
+                section.style.display = index === 0 ? 'block' : 'none';
+            });
+
+            // Update progress bar
+            function updateProgress() {
+                steps.forEach((step, index) => {
+                    if (index <= currentStep) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active');
+                    }
+                });
+
+                // Update button text
+                if (currentStep === sections.length - 1) {
+                    nextBtn.innerHTML = '<i class="fas fa-check-circle"></i> Confirm Booking';
+                } else {
+                    nextBtn.innerHTML = 'Next <i class="fas fa-arrow-right"></i>';
+                }
+
+                // Show/hide previous button
+                prevBtn.style.display = currentStep > 0 ? 'inline-block' : 'none';
+            }
+
+            // Next button click handler
+            nextBtn.addEventListener('click', () => {
+                // Validate current section
+                const currentSection = sections[currentStep];
+                const requiredInputs = currentSection.querySelectorAll('input[required]');
+                let isValid = true;
+
+                requiredInputs.forEach(input => {
+                    if (!input.value) {
+                        input.classList.add('error');
+                        isValid = false;
+                    } else {
+                        input.classList.remove('error');
+                    }
+                });
+
+                if (!isValid) {
+                    showError('Please fill in all required fields');
+                    return;
+                }
+
+                // If on last step, submit form
+                if (currentStep === sections.length - 1) {
+                    document.getElementById('bookingForm').submit();
+                    return;
+                }
+
+                // Move to next section
+                sections[currentStep].style.display = 'none';
+                currentStep++;
+                sections[currentStep].style.display = 'block';
+                updateProgress();
+            });
+
+            // Previous button click handler
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 0) {
+                    sections[currentStep].style.display = 'none';
+                    currentStep--;
+                    sections[currentStep].style.display = 'block';
+                    updateProgress();
+                }
+            });
+
+            // Handle delivery method selection
+            const deliveryOptions = document.querySelectorAll('.delivery-option');
+            const addressGroup = document.getElementById('addressGroup');
+            const addressInput = document.getElementById('address');
+
+            deliveryOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    deliveryOptions.forEach(opt => opt.classList.remove('selected'));
+                    option.classList.add('selected');
+                    
+                    if (option.dataset.value === 'home') {
+                        addressGroup.style.display = 'block';
+                        addressInput.required = true;
+                    } else {
+                        addressGroup.style.display = 'none';
+                        addressInput.required = false;
+                    }
+                });
+            });
+
+            // Handle form submission
+            document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const submitBtn = e.target.querySelector('button[type="submit"]');
+                const originalText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                submitBtn.disabled = true;
+
+                try {
+                    const formData = new FormData(e.target);
+                    formData.append('vehicleId', vehicleId);
+                    
+                    const response = await fetch('/api/book', {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        showSuccess('Booking confirmed! Redirecting to home page...');
+                        setTimeout(() => {
+                            window.location.href = 'index.html';
+                        }, 2000);
+                    } else {
+                        showError(result.error || 'Booking failed. Please try again.');
+                    }
+                } catch (error) {
+                    showError('An error occurred. Please try again.');
+                } finally {
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <p>${message}</p>
+            `;
+            document.body.appendChild(successDiv);
+            setTimeout(() => successDiv.remove(), 3000);
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.innerHTML = `
+                <i class="fas fa-exclamation-circle"></i>
+                <p>${message}</p>
+            `;
+            document.body.appendChild(errorDiv);
+            setTimeout(() => errorDiv.remove(), 3000);
+        }
+    </script>
+</body>
+</html> 
